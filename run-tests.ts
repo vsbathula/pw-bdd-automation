@@ -13,10 +13,10 @@ async function main() {
   const tagsArg = args.find((arg) => arg.startsWith("-tags="));
   const tags = tagsArg ? tagsArg.split("=")[1].split(",") : [];
   const featurePath =
-    args.find((arg) => !arg.startsWith("--")) || "./sre/features";
+    args.find((arg) => !arg.startsWith("--")) || "./src/features";
   const logger = new Logger();
 
-  logger.info(`Running tests with environment: $(environment}`);
+  logger.info(`Running tests with environment: ${environment}`);
 
   try {
     // Load environment configuration
@@ -41,7 +41,7 @@ async function main() {
         true
       ),
       video: environmentManager.getBoolean(" ENABLE_VIDEO", false),
-      reportDir: "/test-results",
+      reportDir: "./test-results",
     };
     logger.info(
       `Execution Options: ${JSON.stringify(

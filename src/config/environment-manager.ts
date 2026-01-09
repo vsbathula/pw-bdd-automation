@@ -13,7 +13,7 @@ export class EnvironmentManager {
   private logger = new Logger();
 
   private constructor() {
-    this.configDir = path.join(process.cwd(), "src', 'config");
+    this.configDir = path.join(process.cwd(), "src", "config");
     this.loadEnvironmentConfigs();
   }
 
@@ -143,7 +143,7 @@ export class EnvironmentManager {
     // Set environment variables in process.env for the current run
     Object.entries(config).forEach(([key, value]) => {
       if (value !== undefined && process.env[key] === undefined) {
-        if (typeof value === undefined) {
+        if (value === undefined) {
           process.env[key] = JSON.stringify(value);
         } else {
           process.env[key] = String(value);

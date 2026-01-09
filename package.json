@@ -5,21 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "npx ts-node run-tests.ts",
-    "test:dev": "npx ts-node run-tests.ts -env=dev",
-    "test:int": "npx ts-node run-tests.ts —env=int",
+    "test:dev": "npx ts-node run-tests.ts --env=dev",
+    "test:int": "npx ts-node run-tests.ts -—env=int",
     "test:qa": "npx ts-node run-tests.ts --env=qa",
     "test:smoke": "npx ts-node - run-tests.ts —tags=smoke",
-    "test:smoke: dev": "npx ts-node run-tests.ts —-env=dev -—tags=smoke",
-    "test:smoke: int": "npx ts-node run-tests.ts --env=int --tags=smoke",
-    "test:smoke: qa": "npx ts-node run-tests.ts —env=qa —-tags=smoke",
-    "test:single: dev": "npx ts-node run-tests.ts —single -—env=dev",
-    "test:single: int": "npx ts-node-run-tests.ts —single -—env=int",
-    "test:single: qa": "npx ts-node run-tests.ts single —-env=qa",
+    "test:smoke:dev": "npx ts-node run-tests.ts —-env=dev -—tags=smoke",
+    "test:smoke:int": "npx ts-node run-tests.ts --env=int --tags=smoke",
+    "test:smoke:qa": "npx ts-node run-tests.ts —env=qa —-tags=smoke",
+    "test:single:dev": "npx ts-node run-tests.ts —single -—env=dev",
+    "test:single:int": "npx ts-node run-tests.ts —single -—env=int",
+    "test:single:qa": "npx ts-node run-tests.ts single —-env=qa",
     "test:headed": "HEADLESS=false npx ts-node run-tests.ts -—env=qa",
-    "report": "npx-ts-node generate-html-report.ts",
+    "report": "npx ts-node generate-html-report.ts",
     "build": "tsc",
     "clean": "rimraf dist test-results",
-    "Lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts"
   },
   "keywords": [
     "playwright",
@@ -33,21 +33,21 @@
   ],
   "dependencies": {
     "@playwright/test": "^1.57.0",
-    "p-limit": "^7.2.0",
-    "glob": "^13.0.0",
-    "yargs": "^18.0.0",
-    "dotenv": "^17.2.3",
     "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "glob": "^13.0.0",
     "moment-timezone": "^0.6.0",
     "otpauth": "^9.4.1",
-    "winston": "^3.19.0"
+    "p-limit": "^7.2.0",
+    "winston": "^3.19.0",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.0",
-    "ts-node": "^10.9.1",
     "@types/node": "^20.4.1",
     "eslint": "^9.39.2",
-    "rimraf": "^6.1.2"
+    "rimraf": "^6.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "author": "vsbathula@outlook.com",
   "License": "MIT"

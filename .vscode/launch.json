@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Single Feature",
+      "type": "node",
+      "request": "launch",
+      "program": "run-tests.ts",
+      "args": ["-single", "-env=qa", "—file=saucedemo.feature"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development",
+        "HEADLESS": "false"
+      },
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug All Features",
+      "type": "node",
+      "request": "launch",
+      "program": "run-tests.ts",
+      "args": ["--env=qa"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
