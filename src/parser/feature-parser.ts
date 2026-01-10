@@ -82,7 +82,7 @@ export class FeatureParser {
     while (currentLine < lines.length) {
       const line = lines[currentLine];
 
-      if (line.text.startsWith("Background: ")) {
+      if (line.text.startsWith("Background:")) {
         const { background, nextLine } = this.parseBackground(
           lines,
           currentLine

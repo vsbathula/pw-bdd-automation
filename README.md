@@ -79,7 +79,7 @@ npm run test:smoke
 npm run test:smoke:qa
 
 #Run single feature file
-npm run test:single:dev -- --file-name.feature
+npm run test:single:dev -- --file=name.feature
 
 # Run in headed mode (visible browser)
 npm run test:headed

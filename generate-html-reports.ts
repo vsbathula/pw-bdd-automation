@@ -141,7 +141,7 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
         ? "danger"
         : "secondary";
     const statusIcon =
-      step.status === "passed" ? "✅" : step.status === "failed" ? "❌" : "•";
+      step.status === "passed" ? "✔" : step.status === "failed" ? "✗" : "•";
 
     let errorHtml = "";
     if (step.error) {
@@ -183,9 +183,9 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
         : "secondary";
     const statusIcon =
       scenario.status === "passed"
-        ? "✅"
+        ? "✔"
         : scenario.status === "failed"
-        ? "❌"
+        ? "✗"
         : "•";
     const scenarioId = `scenario-${featureIndex}-${scenarioIndex}`;
     const collapseId = `collapse-${scenarioId}`;
@@ -308,11 +308,11 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
                 <div class="text-end">
                     <div class="badge bg-${statusClass} fs-6 mb-1">
                         ${feature.scenarios.length} scenario(s)
-                        <div>
-                            <small class="text-muted">Duration: ${formatDuration(
-                              feature.duration
-                            )}</small>
-                        </div>
+                    </div>
+                    <div>
+                      <small class="text-muted">Duration: ${formatDuration(
+                        feature.duration
+                      )}</small>
                     </div>
                 </div>
             </div>
@@ -654,7 +654,8 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
                                 top: 20px; 
                                 right: 20px; 
                                 background:#dc3545;
-                                color: white; border: none;
+                                color: white; 
+                                border: none;
                                 padding: 10px 15px;
                                 border-radius: 50px; 
                                 cursor: pointer; 
@@ -667,7 +668,7 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
                         </style>
                     </head>
                     <body>
-                        <button class="close-btn" onclick="window.close()"></button>
+                        <button class="close-btn" onclick="window.close()">x</button>
                         <div class="header">
                             <h2>\${title}</h2>
                             <p class="text-muted mb-0">Test execution screenshot</p>
