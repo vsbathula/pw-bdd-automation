@@ -7,10 +7,10 @@ import * as path from "path";
 
 async function main() {
   const args = process.argv.slice(2);
-  const command = args.find((arg) => arg === "---single") ? "single" : "all";
-  const envArg = args.find((arg) => arg.startsWith("—-env="));
+  const command = args.find((arg) => arg === "--single") ? "single" : "all";
+  const envArg = args.find((arg) => arg.startsWith("--env="));
   const environment = envArg ? envArg.split("=")[1] : "qa";
-  const tagsArg = args.find((arg) => arg.startsWith("-tags="));
+  const tagsArg = args.find((arg) => arg.startsWith("--tags="));
   const tags = tagsArg ? tagsArg.split("=")[1].split(",") : [];
   const featurePath =
     args.find((arg) => !arg.startsWith("--")) || "./src/features";
@@ -40,7 +40,7 @@ async function main() {
         "ENABLE_SCREENSHOTS",
         true
       ),
-      video: environmentManager.getBoolean(" ENABLE_VIDEO", false),
+      video: environmentManager.getBoolean("ENABLE_VIDEO"),
       reportDir: "./test-results",
     };
     logger.info(
@@ -62,7 +62,7 @@ async function main() {
     if (command === "single") {
       // Run single feature file
       const fileArg = args
-        .find((arg) => arg.startsWith("-file="))
+        .find((arg) => arg.startsWith("--file="))
         ?.split("=")[1];
       const singleFeaturePath = path.resolve(`${featurePath}/${fileArg}`);
 
@@ -103,8 +103,8 @@ async function main() {
       logger.info(`Environment: ${environment}`);
       logger.info(`Total scenarios: ${report.summary.total}`);
       logger.info(`Passed: ${report.summary.passed}`);
-      logger.info(`Failed: $(report.summary.failed}`);
-      logger.info(`Skipped: $(report.summary.skipped}`);
+      logger.info(`Failed: ${report.summary.failed}`);
+      logger.info(`Skipped: ${report.summary.skipped}`);
       logger.info(`Duration: ${report.summary.duration}ms`);
 
       // Exit with error code if tests failed

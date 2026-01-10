@@ -6,7 +6,7 @@
       "type": "node",
       "request": "launch",
       "program": "run-tests.ts",
-      "args": ["-single", "-env=qa", "—file=saucedemo.feature"],
+      "args": ["--single", "--env=qa", "--file=saucedemo.feature"],
       "runtimeArgs": ["-r", "ts-node/register"],
       "env": {
         "NODE_ENV": "development",

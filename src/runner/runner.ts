@@ -105,6 +105,8 @@ export async function runAllFeatures(
     },
     startTime,
     endTime,
+    baseUrl: options.baseUrl,
+    environment: options.environment,
   };
 
   // Save test report
@@ -171,6 +173,8 @@ export async function runSingleFeature(
       },
       startTime,
       endTime,
+      baseUrl: options.baseUrl,
+      environment: options.environment,
     };
 
     // Save test report

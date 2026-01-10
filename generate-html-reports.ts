@@ -65,6 +65,8 @@ interface TestReport {
   };
   startTime: string;
   endTime: string;
+  baseUrl: string;
+  environment: string;
 }
 
 function generateHtmlReport(reportPath: string, outputPath: string): void {
@@ -431,9 +433,9 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
                         <div class="progress-circle bg-white rounded-circle d-flex align-items-center justify-content-center m-auto">
                             <div class="text-center">
                                 <div class="fs-2 fw-bold text-${
-                                  passPercentage >= 80
+                                  passPercentage >= 90
                                     ? "success"
-                                    : passPercentage >= 60
+                                    : passPercentage >= 85
                                     ? "warning"
                                     : "danger"
                                 }">

@@ -128,4 +128,6 @@ export interface TestReport {
   };
   startTime: Date;
   endTime: Date;
+  environment: string;
+  baseUrl: string;
 }

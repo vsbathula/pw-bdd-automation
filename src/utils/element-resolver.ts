@@ -300,7 +300,7 @@ export class ElementResolver {
           (await locator.first().isVisible({ timeout: 1000 }))
         ) {
           this.logger.info(
-            `✅ Found element "$(name}" using strategy: $(selector}`
+            `✅ Found element "${name}" using strategy: ${selector}`
           );
           return selector;
         }
