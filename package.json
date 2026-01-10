@@ -37,6 +37,7 @@
     "dotenv": "^17.2.3",
     "glob": "^13.0.0",
     "moment-timezone": "^0.6.0",
+    "node-nlp": "^5.0.0-alpha.5",
     "otpauth": "^9.4.1",
     "p-limit": "^7.2.0",
     "winston": "^3.19.0",

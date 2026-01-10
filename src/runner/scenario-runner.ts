@@ -449,7 +449,7 @@ export class ScenarioRunner {
     const fullStepText = `${step.keyword} ${step.text}`;
     try {
       // Parse the step using the new parser
-      const actionObj: StepAction = parseStep(fullStepText);
+      const actionObj: StepAction = await parseStep(fullStepText);
       this.logger.info(
         `Parsed step action: ${actionObj.action}, locator: ${actionObj.locator}, elementType: ${actionObj.elementType}`
       );

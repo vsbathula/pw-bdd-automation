@@ -2,6 +2,7 @@ import { runAllFeatures, runSingleFeature } from "./src/runner/runner";
 import { ExecutionOptions } from "./src/types/feature-types";
 import { environmentManager } from "./src/config/environment-manager";
 import Logger from "./src/utils/logger";
+import { trainModel } from "./src/nlp/nlp-processor";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -19,6 +20,9 @@ async function main() {
   logger.info(`Running tests with environment: ${environment}`);
 
   try {
+    // Train the NLP model before parsing steps
+    await trainModel();
+    logger.info("NLP engine initialized.");
     // Load environment configuration
     environmentManager.setEnvironment(environment);
 
