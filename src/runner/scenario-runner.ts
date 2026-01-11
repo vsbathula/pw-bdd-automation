@@ -398,28 +398,30 @@ export class ScenarioRunner {
       }
     }
 
-    // All retries failed
-    const enableScreenshots = environmentManager.getBoolean(
-      "ENABLE_SCREENSHOTS",
-      true
-    );
-    if (enableScreenshots) {
-      const screenshotPath = await this.takeScreenshotForPage(
-        context.page,
-        `FINAL_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`
+    if (maxRetries > 0) {
+      // All retries failed
+      const enableScreenshots = environmentManager.getBoolean(
+        "ENABLE_SCREENSHOTS",
+        true
       );
+      if (enableScreenshots) {
+        const screenshotPath = await this.takeScreenshotForPage(
+          context.page,
+          `FINAL_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`
+        );
 
-      // Add final screenshot as embedding
-      if (screenshotPath) {
-        await this.addScreenshotEmbedding(screenshotPath, stepEmbeddings);
+        // Add final screenshot as embedding
+        if (screenshotPath) {
+          await this.addScreenshotEmbedding(screenshotPath, stepEmbeddings);
+        }
+
+        // Add debug capture here
+        await DOMDebugHelper.capturePageInfo(
+          context.page,
+          `FInal_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`,
+          this.options.reportDir
+        );
       }
-
-      // Add debug capture here
-      await DOMDebugHelper.capturePageInfo(
-        context.page,
-        `FInal_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`,
-        this.options.reportDir
-      );
     }
     return {
       step,
