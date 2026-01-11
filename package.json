@@ -16,6 +16,7 @@
     "test:single:int": "npx ts-node run-tests.ts --single --env=int",
     "test:single:qa": "npx ts-node run-tests.ts --single --env=qa",
     "test:headed": "HEADLESS=false npx ts-node run-tests.ts --env=qa",
+    "record": "npx ts-node ./src/utils/launch-recorder.ts",
     "report": "npx ts-node ./generate-html-reports.ts",
     "build": "tsc",
     "clean": "rimraf dist test-results",

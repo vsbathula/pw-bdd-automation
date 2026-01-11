@@ -45,24 +45,38 @@ pw-automation/
 ├── generate-html-reports.ts.      # HTML report generator
 ├── logs/
 ├── test-results/                  # Generated reports and artifacts
+├── registries/                    # cached page elements
 └── src/
     ├── config/                    # Environment configurations
     │   └── environment-manager.ts
     ├── features/                  # Gherkin feature files
     │   └── login_flow.feature
+    ├── nlp/                       # step nlp train modal
+    │   └── nlp-processor.ts
     ├── runner/                    # Test execution engine
-    │   ├── runner.ts
+    │   ├── runner.ts              # Runner class to execute single or all feature files
     │   └── scenario.ts
     ├── types/                     # TypeScript type definitions
     │   └── feature-types.ts
     └── utils/                     # Utility functions
-        ├── element-resolver.ts
-        ├── step-parser.ts
-        ├── logger.ts
-        └── dom-debug-helper.ts
+        ├── action-recorder.ts     # Event capture logic
+        ├── dom-analyzer.ts        # Shadow DOM & Iframe scanner
+        ├── dom-debug-helper.ts
+        ├── element-resolver.ts    # Smart discovery engine
+        ├── launch-recoder.ts      # Recorder entry point
+        ├── logger.ts              # logger util to log events
+        ├── step-parser.ts         # parse feature file in to action, elementType, locator & value
+        └── totp.ts                # linka and generate opt for a specific account
 ```
 
 ## ⚡ Quick Start
+
+### Running Tests
+
+```bash
+# Auto generate click and fill steps
+npm run record
+```
 
 ### Running Tests
 
