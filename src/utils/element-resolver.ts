@@ -1,4 +1,4 @@
-import { Page, Locator, Frame } from "playwright";
+import { Page, Locator } from "playwright";
 import { DOMAnalyzer } from "./dom-analyzer";
 import Logger from "./logger";
 import * as fs from "fs";

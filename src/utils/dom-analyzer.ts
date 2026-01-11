@@ -1,4 +1,4 @@
-import { Page, Frame } from "playwright";
+import { Page } from "playwright";
 import stringSimilarity from "string-similarity";
 import Logger from "./logger";
 
