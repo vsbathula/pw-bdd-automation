@@ -16,28 +16,43 @@ export class DOMAnalyzer {
       try {
         const elements = await frame.evaluate(() => {
           const items: any[] = [];
-          const sel = [
-            "button",
-            "input",
-            "a[href]",
-            "[role='button']",
-            "[data-testid]",
-            "select",
-          ];
-          document.querySelectorAll(sel.join(",")).forEach((el) => {
-            const element = el as HTMLElement;
-            items.push({
-              tag: element.tagName.toLowerCase(),
-              text: element.textContent?.trim().substring(0, 50) || "",
-              id: element.id || "",
-              name: (element as any).name || "",
-              placeholder: (element as any).placeholder || "",
-              dataTestId:
-                element.getAttribute("data-testid") ||
-                element.getAttribute("data-test") ||
-                "",
+
+          // Recursive function to pierce Shadow Roots
+          const collectElements = (root: Document | ShadowRoot) => {
+            const selectors = [
+              "button",
+              "input",
+              "a[href]",
+              "[role='button']",
+              "[data-testid]",
+              "select",
+            ];
+
+            // 1. Find elements in current root
+            root.querySelectorAll(selectors.join(",")).forEach((el) => {
+              const element = el as HTMLElement;
+              items.push({
+                tag: element.tagName.toLowerCase(),
+                text: element.textContent?.trim().substring(0, 50) || "",
+                id: element.id || "",
+                name: (element as any).name || "",
+                placeholder: (element as any).placeholder || "",
+                dataTestId:
+                  element.getAttribute("data-testid") ||
+                  element.getAttribute("data-test") ||
+                  "",
+              });
             });
-          });
+
+            // 2. Look for nested Shadow Roots
+            root.querySelectorAll("*").forEach((el) => {
+              if (el.shadowRoot) {
+                collectElements(el.shadowRoot);
+              }
+            });
+          };
+
+          collectElements(document);
           return items;
         });
 
@@ -53,7 +68,6 @@ export class DOMAnalyzer {
           if (el.text) allSuggestions.push(`${el.tag}:has-text("${el.text}")`);
         }
       } catch (e) {
-        // Skip cross-origin frames that block execution
         continue;
       }
     }
