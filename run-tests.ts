@@ -88,10 +88,10 @@ async function main() {
       const result = await runSingleFeature(singleFeaturePath, options);
 
       logger.info(`\n=== Single Feature Execution Result ===`);
-      logger.info(`Feature: $(result.feature.name}`);
-      logger.info(`Status: $(result.status}`);
-      logger.info(`Duration: $(result.duration}ms`);
-      logger.info(`Scenarios: $(result.scenarios.length}`);
+      logger.info(`Feature: ${result.feature.name}`);
+      logger.info(`Status: ${result.status}`);
+      logger.info(`Duration: ${result.duration}ms`);
+      logger.info(`Scenarios: ${result.scenarios.length}`);
 
       result.scenarios.forEach((scenario) => {
         logger.info(

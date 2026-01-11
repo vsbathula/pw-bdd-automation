@@ -21,6 +21,9 @@ export class FeatureParser {
     const features: Feature[] = [];
     const files = fs.readdirSync(dirPath);
     for (const file of files) {
+      if (!file.endsWith(".feature")) {
+        continue;
+      }
       const featureFile = path.join(dirPath, file);
       features.push(this.parseFeatureFile(featureFile));
     }
