@@ -468,8 +468,7 @@ export class ScenarioRunner {
           const fillLocator = await this.elementResolver.resolve(
             page,
             actionObj.locator!,
-            actionObj.elementType,
-            context.scenario.name
+            actionObj.elementType
           );
           await fillLocator.fill(actionObj.value!);
           // Wait for any potential response/redirect after filling
@@ -479,8 +478,7 @@ export class ScenarioRunner {
           const clickLocator = await this.elementResolver.resolve(
             page,
             actionObj.locator!,
-            actionObj.elementType,
-            context.scenario.name
+            actionObj.elementType
           );
           // Get current URL before click to detect redirects
           const currenturl = page.url();
@@ -492,8 +490,7 @@ export class ScenarioRunner {
           const selectLocator = await this.elementResolver.resolve(
             page,
             actionObj.locator!,
-            actionObj.elementType,
-            context.scenario.name
+            actionObj.elementType
           );
           await selectLocator.selectOption({ label: actionObj.value! });
           // Wait for any potential response/redirect after filling
