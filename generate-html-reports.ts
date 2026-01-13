@@ -36,6 +36,7 @@ interface ScenarioResult {
   startTime: string;
   endTime: string;
   videoPath?: string;
+  tracePath?: string;
 }
 
 interface FeatureResult {
@@ -206,6 +207,17 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
         `
       : "";
 
+    const traceHtml = scenario.tracePath
+      ? `
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="bi bi-search"></i> 
+                    <a href="${scenario.tracePath}" target="_blank" class="text-decoration-none">View Trace</a>
+                </small>
+            </div>
+        `
+      : "";
+
     // Auto-expand failed scenarios
     const shouldExpand = scenario.status === "failed";
 
@@ -239,6 +251,7 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
                         ${stepsHtml}
                     </div> 
                     ${videoHtml}
+                    ${traceHtml}
                 </div>
             </div>
         </div>

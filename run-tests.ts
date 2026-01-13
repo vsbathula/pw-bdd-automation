@@ -28,7 +28,7 @@ async function main() {
 
     const options: ExecutionOptions = {
       environment,
-      baseUrl: environmentManager.getString("BASE_URL"),
+      baseUrl: environmentManager.getString("BASE_URL") as string,
       headless: environmentManager.getBoolean("HEADLESS", true),
       parallel: environmentManager.getBoolean("PARALLEL_EXECUTION", true),
       maxParallel: environmentManager.getNumber("MAX_WORKERS", 5),
@@ -36,6 +36,7 @@ async function main() {
         | "chromium"
         | "firefox"
         | "webkit",
+      trace: environmentManager.getBoolean("ENABLE_TRACING"),
       timeout: environmentManager.getNumber("TIMEOUT"),
       retries: environmentManager.getNumber("RETRIES"),
       tags,
@@ -62,7 +63,6 @@ async function main() {
         2
       )}`
     );
-
     if (command === "single") {
       // Run single feature file
       const fileArg = args

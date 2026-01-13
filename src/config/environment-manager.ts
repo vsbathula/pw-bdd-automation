@@ -174,9 +174,11 @@ export class EnvironmentManager {
   }
 
   //Get a string value with default
-  getString(key: string, defaultValue: string = ""): string {
+  getString(key: string, defaultValue: string = ""): string | object {
     const value = this.currentConfig[key];
-    return typeof value === "string" ? value : defaultValue;
+    return typeof value === "string" || typeof value === "object"
+      ? value
+      : defaultValue;
   }
 
   // Get a number value with default

@@ -74,6 +74,7 @@ export interface ExecutionOptions {
   maxParallel?: number;
   headless?: boolean;
   browser?: "chromium" | "firefox" | "webkit";
+  trace?: boolean;
   timeout?: number;
   retries?: number;
   tags?: string[];
@@ -107,6 +108,7 @@ export interface ScenarioResult {
   startTime: Date;
   endTime: Date;
   videoPath?: string;
+  tracePath?: string;
   embeddings?: Embedding[];
 }
 

@@ -23,6 +23,7 @@ import { ElementResolver } from "../utils/element-resolver";
 import { DOMDebugHelper } from "../utils/dom-debug-helper";
 import * as path from "path";
 import * as fs from "fs";
+import { trace } from "console";
 
 export class ScenarioRunner {
   private browser: Browser | null = null;
@@ -141,6 +142,7 @@ export class ScenarioRunner {
     this.logger.info(`\n ▶️ Running scenario: ${scenario.name}`);
     let status: "passed" | "failed" | "skipped" = "passed";
     let videoPath: string | undefined;
+    let tracePath: string | undefined;
     const stepResults: StepResult[] = [];
 
     // Create a new context for each scenario to get individual videos
@@ -167,8 +169,7 @@ export class ScenarioRunner {
 
     try {
       // Navigate to base URL for the scenario page
-      const baseURL =
-        this.options.baseUrl || environmentManager.getString("BASE_URL");
+      const baseURL = this.options.baseUrl;
       this.logger.info(`Navigating scenario page to base URL: ${baseURL}`);
       await scenarioPage.goto(baseURL);
 
@@ -203,6 +204,7 @@ export class ScenarioRunner {
 
       this.logger.info(`Scenario ${status}: ${scenario.name}`);
       videoPath = await this.getVideoPath(scenarioPage, scenario.name);
+      tracePath = await this.getTracePath(scenarioContext, scenario.name);
       return {
         scenario,
         steps: stepResults,
@@ -211,6 +213,7 @@ export class ScenarioRunner {
         startTime,
         endTime,
         videoPath,
+        tracePath,
         embeddings,
       };
     } catch (error) {
@@ -227,6 +230,7 @@ export class ScenarioRunner {
 
       // Get video path even for failed scenarios
       videoPath = await this.getVideoPath(scenarioPage, scenario.name);
+      tracePath = await this.getTracePath(scenarioContext, scenario.name);
       return {
         scenario,
         steps: stepResults,
@@ -235,6 +239,7 @@ export class ScenarioRunner {
         startTime,
         endTime: new Date(),
         videoPath,
+        tracePath,
         embeddings,
       };
     } finally {
@@ -292,7 +297,17 @@ export class ScenarioRunner {
         dir: traceDir,
       };
     }
-    return await this.browser!.newContext(contextOptions);
+    const context = await this.browser!.newContext(contextOptions);
+    await context.tracing.start({
+      screenshots: true,
+      snapshots: true,
+      sources: true,
+    });
+    this.logger.info(`Tracing started for scenario: ${scenarioName}`);
+
+    //  Add cookies to the context
+    await context.addCookies([]);
+    return context;
   }
 
   private async getVideoPath(
@@ -315,6 +330,36 @@ export class ScenarioRunner {
     } catch (error) {
       this.logger.error(
         `Failed to get video path: ${(error as Error).message}`
+      );
+    }
+    return undefined;
+  }
+
+  private async getTracePath(
+    context: BrowserContext,
+    scenarioName: string
+  ): Promise<string | undefined> {
+    try {
+      const enableTracing = this.options.trace;
+      if (!enableTracing) return undefined;
+
+      // Stop tracing first
+      const tracePath = path.join(
+        this.options.reportDir,
+        "traces",
+        `${scenarioName.replace(/[^a-zA-Z0-9]/g, "_")}_${Date.now()}.zip`
+      );
+      await context.tracing.stop({ path: tracePath });
+
+      if (fs.existsSync(tracePath)) {
+        // Return relative path from report directory
+        const relativePath = path.relative(this.options.reportDir, tracePath);
+        this.logger.info(`Trace saved: ${relativePath}`);
+        return relativePath;
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to get trace path: ${(error as Error).message}`
       );
     }
     return undefined;

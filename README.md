@@ -71,6 +71,66 @@ pw-automation/
 
 ## ⚡ Quick Start
 
+### Test Execution Flow
+
+```
+CLI (main.ts)
+   │
+   ├─ Parse CLI args (--single, --env, --tags, --file)
+   │
+   ├─ Logger init
+   │
+   ├─ trainModel() ──> NLP Engine ready
+   │
+   ├─ environmentManager.setEnvironment()
+   │
+   └─ Build ExecutionOptions
+           │
+           ▼
+   ┌──────────────────────────┐
+   │  Feature Runner           │
+   │  runSingleFeature /       │
+   │  runAllFeatures           │
+   └───────────┬──────────────┘
+               │
+               ▼
+   ┌──────────────────────────┐
+   │  Feature Loop             │
+   │  (Sequential / Parallel)  │
+   │ - For each scenario       │
+   └───────────┬──────────────┘
+               │
+               ▼
+   ┌──────────────────────────┐
+   │  ScenarioRunner           │
+   │ - Execute Steps           │
+   │ - NLP Step Matching       │
+   │ - Retry/Timeout           │
+   │ - Screenshot/Video        │
+   │ - Returns ScenarioResult  │
+   └───────────┬──────────────┘
+               │
+               ▼
+   ┌──────────────────────────┐
+   │  Feature Aggregation      │
+   │ - Collect ScenarioResults │
+   │ - Determine Feature Status│
+   └───────────┬──────────────┘
+               │
+               ▼
+   ┌──────────────────────────┐
+   │  Test Report              │
+   │ - Collect FeatureResults  │
+   │ - Compute summary         │
+   │ - Save JSON report        │
+   └───────────┬──────────────┘
+               │
+               ▼
+       Logging & Exit Code
+       - Display summary
+       - Exit 1 if failed
+```
+
 ### Running Tests
 
 ```bash
@@ -112,6 +172,13 @@ The report will be available at 'test-results/test-report.html' with:
 - 📸 Embedded screenshots for failed steps
 - 🎥 Video recordings of test executions
 - 📊 Comprehensive test statistics and timing
+
+### View trace & network calls
+
+```bash
+# View network calls and traces with screenshot
+npm run trace ./test-results/traces/{trace_file_name}
+```
 
 ### Logs Location
 
@@ -174,25 +241,28 @@ Configure test execution via command line arguments:
 
 ```bash
 # Environment selection
--env=dev|qa|int|prod
+--env=dev|qa|int|prod
 
 # Single file execution
--Single -- --file=.feature
+--Single -- --file=.feature
 
 # Tag filtering
--tags=smoke,regression
+--tags=smoke,regression
 
 # Browser selection
-—browser=chromium|firefox|webkit
+—-browser=chromium|firefox|webkit
 
 # Headless mode
--headless=true|false
+--headless=true|false
 
 # Retry configuration
--retries=3
+--retries=3
 
 # Parallel execution
-.parallel=4
+--parallel=4
+
+@ Trace & network calls
+--trace=true|false
 ```
 
 ## 📊 Reporting & Debugging
