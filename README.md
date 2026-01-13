@@ -8,7 +8,7 @@ A powerful BDD test automation framework built with Playwright and TypeScript th
 - **Multi-Environment Supportie**: Test across dev, int, qa, and production environments
 - **Parallel Execution**: Run tests concurrently for faster feedback
 - **Smart Retries**: Automatic retry mechanism with configurable attempts
-- **Rich Reporting**: Interactive HTML reports with screenshots and videos
+- **Rich Reporting**: Interactive HTML reports with screenshots, videos and traces
 - **Screenshot & Video Capture**: Automatic capture on failures with embedded viewing
 - **Tag-Based Filterings**: Run specific test subsets using Cucumber tags
 - **Background Steps**: Support for common setup steps across scenarios
@@ -25,7 +25,7 @@ A powerful BDD test automation framework built with Playwright and TypeScript th
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+https://github.com/vsbathula/pw-bdd-automation.git
 cd pw-automation
 
 # Install dependencies
