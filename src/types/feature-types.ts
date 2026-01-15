@@ -43,7 +43,28 @@ export interface StepDefinition {
 
 // Environment configuration - flexible key-value pairs
 export interface EnvironmentConfig {
+  // URL & Browser settings
+  BASE_URL?: string;
+  HEADLESS?: boolean;
+  BROWSER?: "chromium" | "firefox" | "webkit";
+  TIMEOUT?: number;
+  RETRIES?: number;
+  VIEWPORT_WIDTH?: number;
+  VIEWPORT_HEIGHT?: number;
+
+  // Test execution settings
+  ENABLE_TRACE?: boolean;
+  ENABLE_SCREENSHOTS?: boolean;
+  ENABLE_VIDEO?: boolean;
+  SLOW_MOTION?: number;
+  PARALLEL_EXECUTION?: boolean;
+  MAX_WORKERS?: number;
+
   [key: string]: string | number | boolean | undefined;
+}
+
+export interface TestData {
+  [key: string]: any;
 }
 
 // Test context for steps
@@ -53,7 +74,7 @@ export interface TestContext {
   page: Page;
   feature: Feature;
   scenario: Scenario;
-  environment: EnvironmentConfig;
+  environment: string;
   attach: (
     data: string | Buffer,
     mediaType: string,
@@ -82,6 +103,9 @@ export interface ExecutionOptions {
   screenshotOnFailure: boolean;
   video: boolean;
   reportDir: string;
+  slowMotion?: number;
+  viewportWidth?: number;
+  viewportHeight?: number;
 }
 
 // Embedding interface for attachments

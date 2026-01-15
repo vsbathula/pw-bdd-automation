@@ -6,8 +6,8 @@ Feature: Sauce Demo E-Commerce Application
 
     # LOGIN SCENARIOS
     Scenario: Successful login with valid credentials
-        When user fill "standard_user" in "username" input
-        And user fill "secret_sauce" in "password" input
+        When user fill "{login.username}" in "username" input
+        And user fill "{login.password}" in "password" input
         And user click "Login" button
         Then user should be redirected to the inventory page
 

@@ -15,6 +15,7 @@ export async function trainModel(): Promise<void> {
   manager.addAfterCondition("en", "element", "in");
   manager.addAfterCondition("en", "element", "from");
   manager.addAfterCondition("en", "element", "Click");
+  manager.addAfterCondition("en", "element", "should be visible");
 
   manager.addDocument("en", "is on the %page%", "navigate");
   manager.addDocument("en", "goes to %page%", "navigate");
@@ -26,6 +27,7 @@ export async function trainModel(): Promise<void> {
   manager.addDocument("en", "Select %value% from %element% radio", "radio");
   manager.addDocument("en", "see a %message% message", "assertText");
   manager.addDocument("en", "should redirected to %page%", "assertUrl");
+  manager.addDocument("en", "%element% should be visible", "assertVisible");
 
   await manager.train();
 }

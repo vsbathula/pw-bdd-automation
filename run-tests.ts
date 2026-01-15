@@ -13,6 +13,10 @@ async function main() {
   const environment = envArg ? envArg.split("=")[1] : "qa";
   const tagsArg = args.find((arg) => arg.startsWith("--tags="));
   const tags = tagsArg ? tagsArg.split("=")[1].split(",") : [];
+  const excludeTagArgs = args.find((arg) => arg.startsWith("--excludeTags="));
+  const excludeTags = excludeTagArgs
+    ? excludeTagArgs.split("=")[1].split(",")
+    : [];
   const featurePath =
     args.find((arg) => !arg.startsWith("--")) || "./src/features";
   const logger = new Logger();
@@ -23,30 +27,28 @@ async function main() {
     // Train the NLP model before parsing steps
     await trainModel();
     logger.info("NLP engine initialized.");
+
     // Load environment configuration
-    environmentManager.setEnvironment(environment);
+    const config = environmentManager.initialize(environment);
 
     const options: ExecutionOptions = {
       environment,
-      baseUrl: environmentManager.getString("BASE_URL") as string,
-      headless: environmentManager.getBoolean("HEADLESS", true),
-      parallel: environmentManager.getBoolean("PARALLEL_EXECUTION", true),
-      maxParallel: environmentManager.getNumber("MAX_WORKERS", 5),
-      browser: environmentManager.getString("BROWSER", "chromium") as
-        | "chromium"
-        | "firefox"
-        | "webkit",
-      trace: environmentManager.getBoolean("ENABLE_TRACING"),
-      timeout: environmentManager.getNumber("TIMEOUT"),
-      retries: environmentManager.getNumber("RETRIES"),
+      baseUrl: config.BASE_URL as string,
+      headless: config.HEADLESS as boolean,
+      parallel: config.PARALLEL_EXECUTION as boolean,
+      maxParallel: config.MAX_WORKERS as number,
+      browser: config.BROWSER as "chromium" | "firefox" | "webkit",
+      trace: config.ENABLE_TRACE as boolean,
+      timeout: config.TIMEOUT as number,
+      retries: config.RETRIES as number,
       tags,
-      excludeTags: [],
-      screenshotOnFailure: environmentManager.getBoolean(
-        "ENABLE_SCREENSHOTS",
-        true
-      ),
-      video: environmentManager.getBoolean("ENABLE_VIDEO"),
+      excludeTags: excludeTags,
+      screenshotOnFailure: config.ENABLE_SCREENSHOTS as boolean,
+      video: config.ENABLE_VIDEO as boolean,
       reportDir: "./test-results",
+      slowMotion: config.SLOW_MOTION as number,
+      viewportWidth: config.VIEWPORT_WIDTH as number,
+      viewportHeight: config.VIEWPORT_HEIGHT as number,
     };
     logger.info(
       `Execution Options: ${JSON.stringify(
@@ -58,6 +60,15 @@ async function main() {
           timeout: options.timeout,
           retries: options.retries,
           tags: options.tags,
+          excludeTags: options.excludeTags,
+          screenshotOnFailure: options.screenshotOnFailure,
+          video: options.video,
+          parallel: options.parallel,
+          maxParallel: options.maxParallel,
+          trace: options.trace,
+          slowMotion: options.slowMotion,
+          viewportWidth: options.viewportWidth,
+          viewportHeight: options.viewportHeight,
         },
         null,
         2

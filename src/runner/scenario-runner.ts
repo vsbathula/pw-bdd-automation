@@ -16,7 +16,7 @@ import {
   ExecutionOptions,
   Embedding,
 } from "../types/feature-types";
-import { environmentManager } from "../config/environment-manager";
+import { environmentManager } from "../utils/environment-manager";
 import Logger from "../utils/logger";
 import { parseStep, StepAction } from "../utils/step-parser";
 import { ElementResolver } from "../utils/element-resolver";
@@ -37,7 +37,7 @@ export class ScenarioRunner {
     this.options = options;
 
     // Set environment and load config
-    environmentManager.setEnvironment(options.environment);
+    environmentManager.initialize(options.environment);
 
     // Log current configuration
     // environmentManager, LogConfig (true) i
@@ -45,19 +45,13 @@ export class ScenarioRunner {
 
   async setup() {
     this.logger.info(
-      `Setting up browser for environments ${environmentManager.getCurrentEnvironment()}`
+      `Setting up browser for environments ${this.options.environment}`
     );
 
     // Get browser settings from environment or options
-    const browserType =
-      this.options.browser ||
-      (environmentManager.getString("BROWSER", "chromium") as
-        | "chromium"
-        | "firefox"
-        | "webkit");
-    const headless =
-      this.options.headless ?? environmentManager.getBoolean("HEADLESS", true);
-    const slowMo = environmentManager.getNumber("SLOW_MO", 0);
+    const browserType = this.options.browser;
+    const headless = this.options.headless;
+    const slowMo = this.options.slowMotion;
     const launchOptions: any = {
       headless,
       slowMo,
@@ -75,7 +69,7 @@ export class ScenarioRunner {
         this.browser = await chromium.launch(launchOptions);
     }
     this.logger.info(
-      `Browser launched for environment: ${environmentManager.getCurrentEnvironment()}`
+      `Browser launched for environment: ${this.options.environment}`
     );
 
     // // Get baseURL from options or environment
@@ -150,8 +144,7 @@ export class ScenarioRunner {
     const scenarioPage = await scenarioContext.newPage();
 
     // Set timeout from environment or options
-    const timeout =
-      this.options.timeout || environmentManager.getNumber("TIMEOUT", 10000);
+    const timeout = this.options.timeout || 10000;
     scenarioPage.setDefaultTimeout(timeout);
 
     const testContext: TestContext = {
@@ -161,7 +154,7 @@ export class ScenarioRunner {
       feature,
       scenario,
       variables: {},
-      environment: environmentManager.getCurrentConfig(),
+      environment: this.options.environment,
       attach: this.createAttachFunction(scenario.name, embeddings),
       screenshot: this.createScreenshotFunction(scenario.name, embeddings),
       log: (message: string) => this.logger.info(message),
@@ -221,9 +214,7 @@ export class ScenarioRunner {
         `Scenario failed: ${scenario.name}: ${(error as Error).message}`
       );
 
-      const enableScreenshots =
-        this.options.screenshotOnFailure ??
-        environmentManager.getBoolean("ENABLE_SCREENSHOTS", true);
+      const enableScreenshots = this.options.screenshotOnFailure;
       if (enableScreenshots) {
         await this.takeScreenshotForPage(scenarioPage, scenario.name);
       }
@@ -252,8 +243,7 @@ export class ScenarioRunner {
     scenarioName: string
   ): Promise<BrowserContext> {
     // Get baseURL from options or environment
-    const baseURL =
-      this.options.baseUrl || environmentManager.getString("BASE_URL");
+    const baseURL = this.options.baseUrl;
 
     // Create context with video recording for this specific scenario
     const contextOptions: any = {
@@ -261,8 +251,8 @@ export class ScenarioRunner {
     };
 
     // Set viewport if defined in environment
-    const viewportWidth = environmentManager.getNumber("VIEWPORT_WIDTH");
-    const viewportHeight = environmentManager.getNumber("VIEWPORT_HEIGHT");
+    const viewportWidth = this.options.viewportWidth;
+    const viewportHeight = this.options.viewportHeight;
 
     if (viewportWidth && viewportHeight) {
       contextOptions.viewport = {
@@ -272,8 +262,7 @@ export class ScenarioRunner {
     }
 
     // Enable video recording with scenario-specific name
-    const enableVideo =
-      this.options.video ?? environmentManager.getBoolean("ENABLE_VIDEO", true);
+    const enableVideo = this.options.video;
 
     if (enableVideo) {
       const videoDir = path.join(this.options.reportDir, "videos");
@@ -288,7 +277,7 @@ export class ScenarioRunner {
     }
 
     // Enable tracing if configured
-    if (environmentManager.getBoolean("ENABLE_TRACING", false)) {
+    if (this.options.trace) {
       const traceDir = path.join(this.options.reportDir, "traces");
       if (!fs.existsSync(traceDir)) {
         fs.mkdirSync(traceDir, { recursive: true });
@@ -315,9 +304,7 @@ export class ScenarioRunner {
     scenarioName: string
   ): Promise<string | undefined> {
     try {
-      const enableVideo =
-        this.options.video ??
-        environmentManager.getBoolean("ENABLE_VIDEO", true);
+      const enableVideo = this.options.video;
       if (!enableVideo) return undefined;
       // Get the video path from the page (Playwright saves it automatically)
       const videoPath = await page.video()?.path();
@@ -391,8 +378,7 @@ export class ScenarioRunner {
     step: Step,
     context: TestContext
   ): Promise<StepResult> {
-    const maxRetries =
-      this.options.retries || environmentManager.getNumber("RETRIES", 2);
+    const maxRetries = this.options.retries || 0;
     let lastError: Error | undefined;
     let firstFailure = true;
     const stepEmbeddings: Embedding[] = [];
@@ -408,10 +394,7 @@ export class ScenarioRunner {
 
         // Take screenshot on first failure(attempt 0)
         if (firstFailure) {
-          const enableScreenshots = environmentManager.getBoolean(
-            "ENABLE_SCREENSHOTS",
-            true
-          );
+          const enableScreenshots = this.options.screenshotOnFailure;
           if (enableScreenshots) {
             const screenshotPath = await this.takeScreenshotForPage(
               context.page,
@@ -445,10 +428,7 @@ export class ScenarioRunner {
 
     if (maxRetries > 0) {
       // All retries failed
-      const enableScreenshots = environmentManager.getBoolean(
-        "ENABLE_SCREENSHOTS",
-        true
-      );
+      const enableScreenshots = this.options.screenshotOnFailure;
       if (enableScreenshots) {
         const screenshotPath = await this.takeScreenshotForPage(
           context.page,

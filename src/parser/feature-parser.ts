@@ -230,9 +230,109 @@ export class FeatureParser {
    * Parse tags from a line
    */
   private static parseTags(tagLine: string): string[] {
-    return tagLine
-      .split(/\s+/)
-      .filter((tag) => tag.startsWith("@"))
-      .map((tag) => tag.substring(1));
+    return tagLine.split(/\s+/).filter((tag) => tag.startsWith("@"));
+    // .map((tag) => tag.substring(1));
+  }
+
+  /**
+   * Filter scenarios based on include and exclude tags
+   */
+  static filterScenarios(
+    scenarios: Scenario[],
+    includeTags: string[],
+    excludeTags: string[]
+  ): Scenario[] {
+    return scenarios.filter((scenario) =>
+      this.shouldIncludeScenario(scenario.tags, includeTags, excludeTags)
+    );
+  }
+
+  /**
+   * Filter features based on tags, removing scenarios that don't match
+   */
+  static filterFeaturesByTags(
+    features: Feature[],
+    includeTags: string[],
+    excludeTags: string[]
+  ): Feature[] {
+    return features
+      .map((feature) => ({
+        ...feature,
+        scenarios: this.filterScenarios(
+          feature.scenarios,
+          includeTags,
+          excludeTags
+        ),
+      }))
+      .filter((feature) => feature.scenarios.length > 0);
+  }
+
+  /**
+   * Determine if a scenario should be included based on tags
+   */
+  private static shouldIncludeScenario(
+    scenarioTags: string[],
+    includeTags: string[],
+    excludeTags: string[]
+  ): boolean {
+    // if exclude tags are specified and scenario has any of them, exclude
+    if (excludeTags && excludeTags.length > 0) {
+      if (scenarioTags.some((tag) => excludeTags.includes(tag))) {
+        return false;
+      }
+    }
+
+    // If include tags are specified, scenario must have at least one
+    if (includeTags && includeTags.length > 0) {
+      return scenarioTags.some((tag) => includeTags.includes(tag));
+    }
+
+    // If no tags specified, include all scenarios (except excluded ones)
+    return true;
+  }
+
+  /**
+   * Get all unique tags from a
+   */
+  static getAllTagsFromFeature(feature: Feature): string[] {
+    const allTags = new Set<string>();
+
+    // Add feature-level tags
+    feature.tags.forEach((tag) => allTags.add(tag));
+    // Add scenario-level tags
+    feature.scenarios.forEach((scenario) => {
+      scenario.tags.forEach((tag) => allTags.add(tag));
+    });
+
+    return Array.from(allTags);
+  }
+
+  /**
+   * Get all unique tags from multiple features
+   */
+  static getAllTagsFromFeatures(features: Feature[]): string[] {
+    const allTags = new Set<string>();
+
+    features.forEach((feature) => {
+      this.getAllTagsFromFeature(feature).forEach((tag) => allTags.add(tag));
+    });
+
+    return Array.from(allTags);
+  }
+
+  /**
+   * Parse feature directory with tag filtering
+   */
+  static parseFeatureDirectoryWithTags(
+    dirPath: string,
+    includeTags?: string[],
+    excludeTags?: string[]
+  ): Feature[] {
+    const features = this.parseFeatureDirectory(dirPath);
+    return this.filterFeaturesByTags(
+      features,
+      includeTags || [],
+      excludeTags || []
+    );
   }
 }

@@ -131,7 +131,7 @@ CLI (main.ts)
        - Exit 1 if failed
 ```
 
-### Running Tests
+### Record Tests
 
 ```bash
 # Auto generate click and fill steps

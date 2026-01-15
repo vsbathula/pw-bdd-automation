@@ -1,4 +1,6 @@
 import { manager } from "../nlp/nlp-processor";
+import Logger from "./logger";
+import { testDataManager } from "./test-data-manager";
 
 export interface StepAction {
   action:
@@ -9,12 +11,42 @@ export interface StepAction {
     | "check"
     | "uncheck"
     | "assertText"
-    | "assertUrl";
+    | "assertUrl"
+    | "assertVisible";
   locator?: string;
   value?: string;
   elementType?: "button" | "link" | "input" | "dropdown" | "checkbox" | "radio";
 }
 
+const logger = new Logger();
+
+/**
+ * Resolve placeholders in text using test data manager
+ * Supports format: {key-path} where key path is dot-notation for nested data
+ * Example: {username_recovery.validEmail} → testData. username_recovery.validEmail
+ */
+function resolvePlaceholders(text: string): string {
+  const placeholderRegex = /\{([A-Za-z_][A-Za-z0-9_.]*)}/g;
+  return text.replace(placeholderRegex, (match, placeholderKey) => {
+    try {
+      // Get data from current environment using test data manager
+      const value = testDataManager.getData(placeholderKey);
+
+      if (value == undefined) {
+        logger.error(`No data found for key: ${placeholderKey}`);
+        throw new Error(`No data found for key: ${placeholderKey}`);
+      }
+
+      // Convert to string if it's not already
+      return typeof value === "string" ? value : JSON.stringify(value);
+    } catch (error) {
+      logger.error(`Error resolving placeholder ${placeholderKey}: ${error}`);
+      throw new Error(
+        `Error resolving placeholder ${placeholderKey}: ${error as string}`
+      );
+    }
+  });
+}
 /**
  * Your Mapping Object now returns the strict 'StepAction' type
  */
@@ -27,7 +59,7 @@ const IntentMap: Record<string, (entities: any, text: string) => StepAction> = {
   fill: (e) => ({
     action: "fill",
     locator: e.element,
-    value: e.value,
+    value: resolvePlaceholders(e.value),
     elementType: "input",
   }),
   click: (e, text) => ({
@@ -38,29 +70,39 @@ const IntentMap: Record<string, (entities: any, text: string) => StepAction> = {
   select: (e) => ({
     action: "select",
     locator: e.element,
-    value: e.value,
+    value: resolvePlaceholders(e.value),
     elementType: "dropdown",
   }),
   check: (e) => ({
     action: "check",
     locator: e.element,
-    value: e.value,
+    value: resolvePlaceholders(e.value),
     elementType: "checkbox",
   }),
   uncheck: (e) => ({
     action: "uncheck",
     locator: e.element,
-    value: e.value,
+    value: resolvePlaceholders(e.value),
     elementType: "checkbox",
   }),
   radio: (e) => ({
     action: "click",
     locator: e.element,
-    value: e.value,
+    value: resolvePlaceholders(e.value),
     elementType: "radio",
   }),
-  assertText: (e) => ({ action: "assertText", value: e.message || e.value }),
-  assertUrl: (e) => ({ action: "assertUrl", value: e.page }),
+  assertText: (e) => ({
+    action: "assertText",
+    value: resolvePlaceholders(e.message || e.value),
+  }),
+  assertUrl: (e) => ({
+    action: "assertUrl",
+    value: resolvePlaceholders(e.page),
+  }),
+  assertVisible: (e) => ({
+    action: "assertVisible",
+    value: resolvePlaceholders(e.element),
+  }),
 };
 
 /**
