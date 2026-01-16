@@ -261,7 +261,7 @@ Configure test execution via command line arguments:
 # Parallel execution
 --parallel=4
 
-@ Trace & network calls
+# Trace & network calls
 --trace=true|false
 ```
 
