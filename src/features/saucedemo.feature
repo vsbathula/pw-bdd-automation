@@ -12,20 +12,20 @@ Feature: Sauce Demo E-Commerce Application
         Then user should be redirected to the inventory page
 
     Scenario: Login fails with invalid credentials
-        When user fill "standard_user" in "username" input
-        And user fill "wrong_password" in "password" input
+        When user fill "{invalid_login.username}" in "username" input
+        And user fill "{invalid_login.password}" in "password" input
         And user click "Login" button
         Then user should see a "username and password do not match any user in this service" message
 
     Scenario: Locked out user cannot login
-        When user fill "locked_out_user" in "username" input
-        And user fill "secret_sauce" in "password" input
+        When user fill "{locked_out_user.username}" in "username" input
+        And user fill "{locked_out_user.password}" in "password" input
         And user click "Login" button
         Then user should see a "sorry, this user has been locked out" message
 
     Scenario: Go to product description page
-        When user fill "standard_user" in "username" input
-        And user fill "secret_sauce" in "password" input
+        When user fill "{login.username}" in "username" input
+        And user fill "{login.password}" in "password" input
         And user click "Login" button
         Then user should be redirected to the inventory page
         When user click "inventory" link
@@ -33,8 +33,8 @@ Feature: Sauce Demo E-Commerce Application
 
     # PRODUCT & CART SCENARIOS
     Scenario: Add a single product to the cart
-        When user fill "standard_user" in "username" input
-        And user fill "secret_sauce" in "password" input
+        When user fill "{login.username}" in "username" input
+        And user fill "{login.password}" in "password" input
         And user click "Login" button
         Then user should be redirected to the inventory page
         When user click "Add to cart" button

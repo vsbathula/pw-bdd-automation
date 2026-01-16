@@ -2,5 +2,13 @@
   "login": {
     "username": "standard_user",
     "password": "secret_sauce"
+  },
+  "invalid_login": {
+    "username": "standard_user",
+    "password": "wrong_password"
+  },
+  "locked_out_user": {
+    "username": "locked_out_user",
+    "password": "secret_sauce"
   }
 }
