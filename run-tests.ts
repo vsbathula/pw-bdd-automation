@@ -38,7 +38,7 @@ async function main() {
       parallel: config.PARALLEL_EXECUTION as boolean,
       maxParallel: config.MAX_WORKERS as number,
       browser: config.BROWSER as "chromium" | "firefox" | "webkit",
-      trace: config.ENABLE_TRACE as boolean,
+      trace: config.ENABLE_TRACING as boolean,
       timeout: config.TIMEOUT as number,
       retries: config.RETRIES as number,
       tags,
