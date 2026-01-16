@@ -1,6 +1,6 @@
 import { runAllFeatures, runSingleFeature } from "./src/runner/runner";
 import { ExecutionOptions } from "./src/types/feature-types";
-import { environmentManager } from "./src/config/environment-manager";
+import { environmentManager } from "./src/utils/environment-manager";
 import Logger from "./src/utils/logger";
 import { trainModel } from "./src/nlp/nlp-processor";
 import * as fs from "fs";
