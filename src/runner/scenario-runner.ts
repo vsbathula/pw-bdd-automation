@@ -398,7 +398,9 @@ export class ScenarioRunner {
           if (enableScreenshots) {
             const screenshotPath = await this.takeScreenshotForPage(
               context.page,
-              `FIRST_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`
+              `FIRST_FAILURE_${step.keyword}_${step.text
+                .replace(/\s+/g, "_")
+                .replace(/"/g, "")}`
             );
 
             // Add screenshot as embedding
@@ -409,7 +411,9 @@ export class ScenarioRunner {
             // Add debug capture here
             await DOMDebugHelper.capturePageInfo(
               context.page,
-              `FIRST_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`,
+              `FIRST_FAILURE_${step.keyword}_${step.text
+                .replace(/\s+/g, "_")
+                .replace(/"/g, "")}`,
               this.options.reportDir
             );
           }
@@ -432,7 +436,9 @@ export class ScenarioRunner {
       if (enableScreenshots) {
         const screenshotPath = await this.takeScreenshotForPage(
           context.page,
-          `FINAL_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`
+          `FINAL_FAILURE_${step.keyword}_${step.text
+            .replace(/\s+/g, "_")
+            .replace(/"/g, "")}`
         );
 
         // Add final screenshot as embedding
@@ -443,7 +449,9 @@ export class ScenarioRunner {
         // Add debug capture here
         await DOMDebugHelper.capturePageInfo(
           context.page,
-          `FInal_FAILURE_${step.keyword}_${step.text.replace(/\s+/g, "_")}`,
+          `FInal_FAILURE_${step.keyword}_${step.text
+            .replace(/\s+/g, "_")
+            .replace(/"/g, "")}`,
           this.options.reportDir
         );
       }

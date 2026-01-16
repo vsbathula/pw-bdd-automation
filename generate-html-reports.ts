@@ -620,86 +620,34 @@ function generateHtmlReport(reportPath: string, outputPath: string): void {
             
             // Screenshot modal functionality
             function openScreenshot(imageSrc, title) {
-                const newTab = window.open('', '_blank');
-                if (!newTab) return;
-                newTab.document.write(\`
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>\${title} - Screenshot</title>
-                        <style>
-                            body {
-                                margin: 0;
-                                padding: 20px; 
-                                background-color:#f8f9fa;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                                display: flex;
-                                flex-direction: column; 
-                                align-items: center;
-                            }
-                            .header {
-                                background: white; 
-                                padding: 1rem 2rem; 
-                                border-radius: 8px;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-                                margin-bottom: 20px; 
-                                text-align: center;
-                                width: 100%; 
-                                max-width: 1200px;
-                            }
-                            .screenshot-container { 
-                                background: white; 
-                                padding: 20px; 
-                                border-radius: 8px;
-                                box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-                                max-width: 95vw; 
-                                max-height: 90vh; 
-                                overflow: auto;
-                            }
-                            img { 
-                                max-width: 100%; 
-                                height: auto; 
-                                display: block; 
-                                border-radius: 4px;
-                            }
-                            .close-btn {
-                                position: fixed;
-                                top: 20px; 
-                                right: 20px; 
-                                background:#dc3545;
-                                color: white; 
-                                border: none;
-                                padding: 10px 15px;
-                                border-radius: 50px; 
-                                cursor: pointer; 
-                                font-size: 16px; 
-                                z-index: 1000;
-                            } 
-                            .close-btn:hover { 
-                                background: #c82333;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <button class="close-btn" onclick="window.close()">x</button>
-                        <div class="header">
-                            <h2>\${title}</h2>
-                            <p class="text-muted mb-0">Test execution screenshot</p>
-                        </div>
-                        <div class="screenshot-container">
-                            <img src="\${imageSrc}" alt="\${title}" />
-                        </div>
-                    </body>
-                    </html>
-                \`);
+                document.getElementById('modalImage').src = imageSrc;
+                document.getElementById('modalTitle').innerText = title;
+                document.getElementById('screenshotModal').style.display = 'block';
+            }
+
+            function closeScreenshot() {
+                document.getElementById('screenshotModal').style.display = 'none';
             }
             // Auto-refresh every 30 seconds if running (disabled for now)
             // setTimeout(() => {
             // location. reload();
             //}, 30000);
         </script>
+
+        <!-- Screenshot Modal -->
+        <div id="screenshotModal" class="modal" onclick="closeScreenshot()" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8);">
+            <div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 1200px; border-radius: 8px; position: relative;">
+                <button class="close-btn" onclick="closeScreenshot()" style="position: absolute; top: 10px; right: 20px; background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 50px; cursor: pointer; font-size: 16px;">x</button>
+                <div class="modal-header" style="text-align: center; margin-bottom: 20px;">
+                    <h2 id="modalTitle"></h2>
+                    
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <img id="modalImage" src="" alt="" style="max-width: 100%; height: auto; border-radius: 4px;" />
+                </div>
+            </div>
+        </div>
+
     </body>
     </html>
     `;
