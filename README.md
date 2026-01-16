@@ -25,11 +25,11 @@ A powerful BDD test automation framework built with Playwright and TypeScript th
 
 ```bash
 # Clone the repository
-https://github.com/vsbathula/pw-bdd-automation.git
+git clone https://github.com/vsbathula/pw-bdd-automation.git
 cd pw-automation
 
 # Install dependencies
-mpm install
+npm install
 
 # Install Playwright browsers
 npx playwright install
